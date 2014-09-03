@@ -1,0 +1,71 @@
+.jsonv {
+  font: 12px "Lucida Console", Monaco, monospace;
+  -webkit-user-select: none;
+}
+.jsonv ul, .jsonv ol {
+  display: inline;
+  list-style: none;
+  padding: 0;
+}
+.jsonv li {
+  margin-left: 1.2em;
+}
+.jsonv li:after {
+  content: ",";
+}
+.jsonv li:last-child:after {
+  display: none;
+}
+.jsonv-object:before, .jsonv-array:before {
+  content: "";
+  display: inline-block;
+  border-style: solid;
+  border-width: .6em .4em 0 .4em;
+  border-color: #666 transparent transparent transparent;
+  margin-right: .4em;
+  cursor: pointer;
+}
+.jsonv-object.closed:before, .jsonv-array.closed:before {
+  border-width: .4em 0 .4em .6em;
+  border-color: transparent transparent transparent #666;
+  margin-right: .6em;
+}
+.jsonv .closed li {
+  display: none;
+}
+.jsonv ul:before {
+  content: "{";
+}
+.jsonv ul:after {
+  content: "}";
+}
+.jsonv .closed ul:before {
+  content: "{\2026";
+}
+.jsonv ol:before {
+  content: "[";
+}
+.jsonv ol:after {
+  content: "]";
+}
+.jsonv .closed ol:before {
+  content: "[\2026";
+}
+.jsonv-key:after {
+  content: ": ";
+}
+.jsonv-string:before, .jsonv-string:after {
+  content: "\"";
+}
+.jsonv-key {
+  color: #881391;
+}
+.jsonv-string {
+  color: #C5201C;
+}
+.jsonv-number, .jsonv-boolean {
+  color: #1C00CF;
+}
+.jsonv-undefined, .jsonv-null {
+  color: #666;
+}
