@@ -8,7 +8,7 @@
     "16": "jsonv16.png"
   },
   "version": "0.3",
-  "permissions": ["http://*/", "https://*/", "ftp://*/", "file:///*"],
+  "permissions": ["http://*/", "https://*/", "ftp://*/"],
   "web_accessible_resources": ["jsonv.css"],
   "background": {
     "scripts": ["jsonv.js"]
