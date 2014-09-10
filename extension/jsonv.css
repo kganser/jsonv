@@ -1,6 +1,5 @@
 .jsonv {
   font: 12px "Lucida Console", Monaco, monospace;
-  -webkit-user-select: none;
 }
 .jsonv ul, .jsonv ol {
   display: inline;
@@ -25,7 +24,7 @@
   margin-right: .4em;
   cursor: pointer;
 }
-.jsonv-object.closed:before, .jsonv-array.closed:before {
+.jsonv .closed:before {
   border-width: .4em 0 .4em .6em;
   border-color: transparent transparent transparent #666;
   margin-right: .6em;
@@ -50,9 +49,6 @@
 }
 .jsonv .closed ol:before {
   content: "[\2026";
-}
-.jsonv-key:after {
-  content: ": ";
 }
 .jsonv-string:before, .jsonv-string:after {
   content: "\"";
