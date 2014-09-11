@@ -1,5 +1,5 @@
 .jsonv {
-  font: "Lucida Console", Monaco, monospace;
+  font: monospace;
 }
 .jsonv ul, .jsonv ol {
   display: inline;
@@ -56,13 +56,15 @@
 }
 .jsonv-key {
   color: #881391;
+  white-space: pre;
 }
 .jsonv-string {
   color: #C5201C;
+  white-space: pre;
 }
 .jsonv-number, .jsonv-boolean {
   color: #1C00CF;
 }
 .jsonv-undefined, .jsonv-null {
-  color: #666;
+  color: #808080;
 }
