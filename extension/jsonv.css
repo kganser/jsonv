@@ -55,11 +55,11 @@
 }
 .jsonv-key {
   color: #881391;
-  white-space: pre;
+  white-space: pre-wrap;
 }
 .jsonv-string {
   color: #C5201C;
-  white-space: pre;
+  white-space: pre-wrap;
 }
 .jsonv-number, .jsonv-boolean {
   color: #1C00CF;
