@@ -1,5 +1,5 @@
 .jsonv {
-  font: 12px monospace;
+  font-family: monospace;
 }
 .jsonv ul, .jsonv ol {
   display: inline;
@@ -19,14 +19,14 @@
   content: "";
   display: inline-block;
   border-style: solid;
-  border-width: .6em .4em 0 .4em;
-  border-color: #666 transparent transparent transparent;
-  margin-right: .4em;
+  border-width: .6em .35em 0 .35em;
+  border-color: #5a5a5a transparent transparent transparent;
+  margin-right: .5em;
   cursor: pointer;
 }
 .jsonv .closed:before {
-  border-width: .4em 0 .4em .6em;
-  border-color: transparent transparent transparent #666;
+  border-width: .35em 0 .35em .6em;
+  border-color: transparent transparent transparent #5a5a5a;
   margin-right: .6em;
 }
 .jsonv .closed li {
