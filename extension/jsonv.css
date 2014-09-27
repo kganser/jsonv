@@ -12,7 +12,7 @@
 .jsonv li:after {
   content: ",";
 }
-.jsonv li:last-child:after {
+.jsonv li:last-child:after, .jsonv-count:after {
   display: none;
 }
 .jsonv-object:before, .jsonv-array:before {
@@ -32,6 +32,9 @@
 .jsonv .closed li {
   display: none;
 }
+.jsonv .closed .jsonv-count {
+  display: inline;
+}
 .jsonv ul:before {
   content: "{";
 }
@@ -47,22 +50,24 @@
 .jsonv ol:after {
   content: "]";
 }
-.jsonv .closed ol:before {
-  content: "[\2026";
-}
 .jsonv-string:before, .jsonv-string:after {
   content: "\"";
+}
+.jsonv .jsonv-count {
+  display: none;
+  margin-left: 0;
+  color: #808080;
 }
 .jsonv-key {
   color: #881391;
   white-space: pre-wrap;
 }
 .jsonv-string {
-  color: #C5201C;
+  color: #c5201c;
   white-space: pre-wrap;
 }
 .jsonv-number, .jsonv-boolean {
-  color: #1C00CF;
+  color: #1c00cf;
 }
 .jsonv-undefined, .jsonv-null {
   color: #808080;
