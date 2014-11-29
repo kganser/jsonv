@@ -1,4 +1,4 @@
 jsonv
 =====
 
-JSON viewer Chrome extension and library.  See <http://kganser.com/jsonv.html> for more information.
+JSON viewer Chrome extension and library.  See <http://jsonv.kganser.com> for more information.
