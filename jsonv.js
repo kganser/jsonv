@@ -63,43 +63,43 @@ var jsonv = function() {
       },
       parent: function() {
         var parent = data;
-        this.path.slice(0, -1).forEach(function(key) { parent = parent[key]; });
+        self.path.slice(0, -1).forEach(function(key) { parent = parent[key]; });
         return parent;
       },
       cancel: function(elem) {
-        if (!this.path) return;
-        this.path = null;
-        if (this.origType) { // revert if editing
+        if (!self.path) return;
+        self.path = null;
+        if (self.origType) { // revert if editing
           elem.contentEditable = false;
-          elem.className = this.origType;
-          elem.textContent = this.origValue;
-          this.path = this.origType = this.origValue = null;
+          elem.className = self.origType;
+          elem.textContent = self.origValue;
+          self.path = self.origType = self.origValue = null;
         } else { // remove if adding
           elem.parentNode.parentNode.removeChild(elem.parentNode);
         }
       },
       submit: function(elem) {
-        if (!this.path) return;
-        var origJson = this.origType == 'jsonv-string' ? JSON.stringify(this.origValue) : this.origValue;
-        if (this.origType && elem.textContent == origJson) { // value unchanged
-          elem.textContent = this.origValue;
+        if (!self.path) return;
+        var origJson = self.origType == 'jsonv-string' ? JSON.stringify(self.origValue) : self.origValue;
+        if (self.origType && elem.textContent == origJson) { // value unchanged
+          elem.textContent = self.origValue;
           elem.contentEditable = false;
-          this.path = this.origType = this.origValue = null;
+          self.path = self.origType = self.origValue = null;
         } else {
           var method = 'insert',
-              object = this.object(elem),
+              object = self.object(elem),
               value = elem.textContent,
-              parent = this.parent();
+              parent = self.parent();
           try { value = JSON.parse(value); } catch (e) {}
-          if (this.origType || object) {
+          if (self.origType || object) {
             method = 'put';
-            if (!this.origType)
-              this.path.splice(-1, 1, elem.parentNode.children[1].textContent);
+            if (!self.origType)
+              self.path.splice(-1, 1, elem.parentNode.children[1].textContent);
           }
-          listener(method, this.path.map(encodeURIComponent).join('/'), value);
-          parent[this.path.pop()] = value;
+          listener(method, self.path.map(encodeURIComponent).join('/'), value);
+          parent[self.path.pop()] = value;
           // reset must be done before DOM changes (?) to prevent double-submit on keydown and blur
-          this.path = this.origType = this.origValue = null;
+          self.path = self.origType = self.origValue = null;
           elem.parentNode.children[1].contentEditable = false;
           if (object) { // replace full parent object
             elem = elem.parentNode.parentNode.parentNode;
@@ -137,8 +137,8 @@ var jsonv = function() {
                 t = item.children[1];
               } else {
                 item = t.parentNode;
-                this.origType = c;
-                this.origValue = t.textContent;
+                self.origType = c;
+                self.origValue = t.textContent;
                 if (c == 'jsonv-string') t.textContent = JSON.stringify(t.textContent);
               }
               if (c != 'jsonv-delete') {
@@ -146,17 +146,17 @@ var jsonv = function() {
                 t.focus();
                 document.execCommand('selectAll', false, null);
               }
-              this.path = [];
+              self.path = [];
               while (item != e.currentTarget) {
-                this.path.unshift(item.children[1].className == 'jsonv-key'
+                self.path.unshift(item.children[1].className == 'jsonv-key'
                   ? item.children[1].textContent
                   : Array.prototype.indexOf.call(item.parentNode.children, item));
                 item = item.parentNode.parentNode.parentNode; // li/root > span > ul/ol > li
               }
               if (c == 'jsonv-delete') {
-                listener('delete', this.path.map(encodeURIComponent).join('/'));
-                delete this.parent()[this.path.pop()];
-                this.path = this.origType = this.origValue = null;
+                listener('delete', self.path.map(encodeURIComponent).join('/'));
+                delete self.parent()[self.path.pop()];
+                self.path = self.origType = self.origValue = null;
                 t.parentNode.parentNode.removeChild(t.parentNode);
               }
             }
@@ -169,19 +169,19 @@ var jsonv = function() {
                 key = c == 'jsonv-key';
             if (esc || !t.textContent && (tab || enter || key && colon)) { // cancel
               e.preventDefault();
-              this.cancel(t);
+              self.cancel(t);
             } else if (!key && (tab || enter) && !e.shiftKey) { // submit
               e.preventDefault();
-              this.submit(t);
+              self.submit(t);
             } else if (key && t.textContent && (tab || enter || colon)) { // move to value
               e.preventDefault();
               e.stopPropagation();
               t.contentEditable = false;
               t.parentNode.lastChild.contentEditable = true;
               t.parentNode.lastChild.focus();
-            } else if (this.object(t) && !key && (tab || enter) && e.shiftKey) { // move to key
+            } else if (self.object(t) && !key && (tab || enter) && e.shiftKey) { // move to key
               e.preventDefault();
-              if (this.origType) {
+              if (self.origType) {
                 t.blur();
               } else {
                 t.contentEditable = false;
@@ -204,7 +204,7 @@ var jsonv = function() {
             }
             break;
           case 'focus':
-            this.focus = e.target.parentNode;
+            self.focus = e.target.parentNode;
             break;
         }
       }
