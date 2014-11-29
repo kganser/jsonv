@@ -56,8 +56,8 @@ var jsonv = function() {
   // TODO: implement sort on arrays
   // TODO: pending request indicator
   // TODO: pagination for objects, arrays
-  var handler = function(listener, data) {
-    return {
+  var handler = function(listener, data, self) {
+    return self = {
       object: function(elem) {
         return elem.parentNode.parentNode.parentNode.className == 'jsonv-object';
       },
@@ -80,20 +80,22 @@ var jsonv = function() {
       },
       submit: function(elem) {
         if (!this.path) return;
-        if (this.origType && elem.textContent == this.origValue) { // value unchanged
+        var origJson = this.origType == 'jsonv-string' ? JSON.stringify(this.origValue) : this.origValue;
+        if (this.origType && elem.textContent == origJson) { // value unchanged
+          elem.textContent = this.origValue;
           elem.contentEditable = false;
           this.path = this.origType = this.origValue = null;
         } else {
           var method = 'insert',
-              object = this.object(elem);
+              object = this.object(elem),
+              value = elem.textContent,
+              parent = this.parent();
+          try { value = JSON.parse(value); } catch (e) {}
           if (this.origType || object) {
             method = 'put';
             if (!this.origType)
               this.path.splice(-1, 1, elem.parentNode.children[1].textContent);
           }
-          var value = elem.textContent,
-              parent = this.parent();
-          try { value = JSON.parse(value); } catch (e) {}
           listener(method, this.path.map(encodeURIComponent).join('/'), value);
           parent[this.path.pop()] = value;
           // reset must be done before DOM changes (?) to prevent double-submit on keydown and blur
@@ -111,11 +113,11 @@ var jsonv = function() {
             c = t.className;
         switch (e.type) {
           case 'click':
-            if (c in {'jsonv-object':1,'jsonv-array':1}) {
-              t.className += ' closed';
-            } else if (c in {'jsonv-object closed':1,'jsonv-array closed':1}) {
-              t.className = c.split(' ')[0];
-            } else if (listener && (c in scalars || c == 'jsonv-delete' || t.tagName in compounds)) {
+            if (c == 'jsonv-object' || c == 'jsonv-array') {
+              t.classList.add('closed');
+            } else if (c == 'jsonv-object closed' || c == 'jsonv-array closed') {
+              t.classList.remove('closed');
+            } else if (listener && t.contentEditable != 'true' && (c in scalars || c == 'jsonv-delete' || t.tagName in compounds)) {
               var item = t;
               if (t.tagName in compounds) {
                 if (item.tagName == 'LI') item = t.parentNode;
@@ -137,6 +139,7 @@ var jsonv = function() {
                 item = t.parentNode;
                 this.origType = c;
                 this.origValue = t.textContent;
+                if (c == 'jsonv-string') t.textContent = JSON.stringify(t.textContent);
               }
               if (c != 'jsonv-delete') {
                 t.contentEditable = true;
@@ -189,7 +192,6 @@ var jsonv = function() {
             break;
           case 'blur':
             if (c in scalars || c == 'jsonv-key') {
-              var self = this;
               self.focus = null;
               setTimeout(function() {
                 var parent = t.parentNode;
