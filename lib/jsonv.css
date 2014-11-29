@@ -1,23 +1,40 @@
-.jsonv {
-  font-family: monospace;
-}
-.jsonv ul, .jsonv ol {
+.jsonv-object ul, .jsonv-array ol {
   display: inline;
   list-style: none;
   padding: 0;
 }
 .jsonv li {
-  margin-left: 1.2em;
+  padding-left: 1.2em;
 }
 .jsonv li:after {
   content: ",";
 }
-.jsonv li:last-child:after, .jsonv-count:after {
+.jsonv li:last-child:after {
   display: none;
+}
+.jsonv .jsonv-delete {
+  display: none;
+  width: .95em;
+  height: .85em;
+  margin: 0 .25em 0 -1.2em;
+  text-align: center;
+  line-height: .8em;
+  color: #808080;
+  font-weight: bold;
+  cursor: pointer;
+}
+.jsonv-editable .jsonv-delete:hover {
+  color: white;
+  background: #c5201c;
+}
+.jsonv-editable li:hover > .jsonv-delete {
+  display: inline-block;
 }
 .jsonv-object:before, .jsonv-array:before {
   content: "";
   display: inline-block;
+  vertical-align: middle;
+  height: 0;
   border-style: solid;
   border-width: .6em .35em 0 .35em;
   border-color: #5a5a5a transparent transparent transparent;
@@ -25,39 +42,34 @@
   cursor: pointer;
   cursor: hand;
 }
-.jsonv .closed:before {
+.jsonv-object.closed:before, .jsonv-array.closed:before {
   border-width: .35em 0 .35em .6em;
   border-color: transparent transparent transparent #5a5a5a;
-  margin-right: .6em;
+  margin: 0 .4em 0 .2em;
 }
-.jsonv .closed li {
+.jsonv-object.closed li, .jsonv-array.closed li {
   display: none;
 }
-.jsonv .closed .jsonv-count {
-  display: inline;
-}
-.jsonv ul:before {
+.jsonv-object ul:before {
   content: "{";
 }
-.jsonv ul:after {
+.jsonv-object ul:after {
   content: "}";
 }
-.jsonv .closed ul:before {
-  content: "{\2026";
+.jsonv-object.closed ul:before {
+  content: "{…";
 }
-.jsonv ol:before {
+.jsonv-array ol:before {
   content: "[";
 }
-.jsonv ol:after {
+.jsonv-array ol:after {
   content: "]";
+}
+.jsonv-array.closed ol:before {
+  content: "[…";
 }
 .jsonv-string:before, .jsonv-string:after {
   content: "\"";
-}
-.jsonv .jsonv-count {
-  display: none;
-  margin-left: 0;
-  color: #808080;
 }
 .jsonv-key {
   color: #881391;
@@ -70,6 +82,16 @@
 .jsonv-number, .jsonv-boolean {
   color: #1c00cf;
 }
-.jsonv-undefined, .jsonv-null {
+.jsonv-null {
   color: #808080;
+}
+.jsonv span[contenteditable=true] {
+  color: black;
+  border: solid 1px #999;
+  padding: 0 2px;
+  box-shadow: 3px 3px 3px #999;
+  outline: none;
+}
+.jsonv-string[contenteditable=true]:before, .jsonv-string[contenteditable=true]:after, .jsonv-key[contenteditable=true]:after {
+  content: none;
 }
