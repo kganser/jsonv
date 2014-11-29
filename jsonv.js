@@ -1,6 +1,7 @@
 // Copyright 2014, Klaus Ganser <http://kganser.com>
 // MIT Licensed, with this copyright and permission notice
 // <http://opensource.org/licenses/MIT>
+
 var jsonv = function() {
   var jsml = function() {
     var jsml, attr = function(node, parent) {
@@ -58,6 +59,11 @@ var jsonv = function() {
       object: function(elem) {
         return elem.parentNode.parentNode.parentNode.className == 'jsonv-object';
       },
+      parent: function() {
+        var parent = data;
+        this.path.slice(0, -1).forEach(function(key) { parent = parent[key]; });
+        return parent;
+      },
       cancel: function(elem) {
         if (!this.path) return;
         this.path = null;
@@ -84,11 +90,10 @@ var jsonv = function() {
               this.path.splice(-1, 1, elem.parentNode.children[1].textContent);
           }
           var value = elem.textContent,
-              parent = data;
+              parent = this.parent();
           try { value = JSON.parse(value); } catch (e) {}
           listener(method, this.path.map(encodeURIComponent).join('/'), value);
-          this.path.slice(0,-1).forEach(function(key) { parent = parent[key]; });
-          parent[this.path[this.path.length-1]] = value;
+          parent[this.path.pop()] = value;
           // reset must be done before DOM changes (?) to prevent double-submit on keydown and blur
           this.path = this.origType = this.origValue = null;
           elem.parentNode.children[1].contentEditable = false;
@@ -145,8 +150,9 @@ var jsonv = function() {
               }
               if (c == 'jsonv-delete') {
                 listener('delete', this.path.map(encodeURIComponent).join('/'));
-                t.parentNode.parentNode.removeChild(t.parentNode);
+                delete this.parent()[this.path.pop()];
                 this.path = this.origType = this.origValue = null;
+                t.parentNode.parentNode.removeChild(t.parentNode);
               }
             }
             break;
@@ -214,3 +220,4 @@ var jsonv = function() {
   });
   return jsonv;
 }();
+
