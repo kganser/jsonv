@@ -51,6 +51,8 @@ var jsonv = function() {
         ? {ul: Object.keys(data).map(function(key) { return {li: [{span: {className: 'jsonv-delete', children: '×'}}, {span: {className: 'jsonv-key', children: key}}, ': ', json(data[key])]}; })}
         : String(data)}};
   };
+  var scalars = {'jsonv-string': 1, 'jsonv-number': 1, 'jsonv-boolean': 1, 'jsonv-null': 1},
+      compounds = {LI: 1, OL: 1, UL: 1};
   // TODO: implement sort on arrays
   // TODO: pending request indicator
   // TODO: pagination for objects, arrays
@@ -113,9 +115,9 @@ var jsonv = function() {
               t.className += ' closed';
             } else if (c in {'jsonv-object closed':1,'jsonv-array closed':1}) {
               t.className = c.split(' ')[0];
-            } else if (listener && (c in {'jsonv-delete':1,'jsonv-string':1,'jsonv-number':1,'jsonv-boolean':1,'jsonv-null':1} || t.tagName in {LI:1,OL:1,UL:1})) {
+            } else if (listener && (c in scalars || c == 'jsonv-delete' || t.tagName in compounds)) {
               var item = t;
-              if (t.tagName == 'LI' || t.tagName == 'OL' || t.tagName == 'UL') {
+              if (t.tagName in compounds) {
                 if (item.tagName == 'LI') item = t.parentNode;
                 if (item.parentNode.classList.contains('closed')) return;
                 if (item.tagName == 'OL') {
@@ -186,17 +188,21 @@ var jsonv = function() {
             }
             break;
           case 'blur':
-            var p = t.parentNode;
-            t = p.lastChild;
-            console.log('blur', c, e); // TODO: relatedTarget not set in FF
-            if ((c in {'jsonv-string':1,'jsonv-number':1,'jsonv-boolean':1,'jsonv-null':1,'jsonv-key':1}) &&
-                (!e.relatedTarget || e.relatedTarget.parentNode != p)) {
-              if (p.children[1].textContent && t.textContent) {
-                this.submit(t);
-              } else {
-                this.cancel(t);
-              }
+            if (c in scalars || c == 'jsonv-key') {
+              var self = this;
+              self.focus = null;
+              setTimeout(function() {
+                var parent = t.parentNode;
+                if (self.focus == parent) return;
+                t = parent.lastChild;
+                if (parent.children[1].textContent && t.textContent)
+                  return self.submit(t);
+                self.cancel(t);
+              }, 0);
             }
+            break;
+          case 'focus':
+            this.focus = e.target.parentNode;
             break;
         }
       }
@@ -210,6 +216,7 @@ var jsonv = function() {
       elem.classList.add('jsonv-editable');
       elem.addEventListener('keydown', listener);
       elem.addEventListener('blur', listener, true);
+      elem.addEventListener('focus', listener, true);
     }
     elem.classList.add('jsonv');
     elem.addEventListener('click', listener || click);
@@ -220,4 +227,3 @@ var jsonv = function() {
   });
   return jsonv;
 }();
-
