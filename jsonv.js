@@ -58,11 +58,12 @@ var jsonv = function() {
   // TODO: pagination for objects, arrays
   var handler = function(listener, data, self) {
     return self = {
+      data: data,
       object: function(elem) {
         return elem.parentNode.parentNode.parentNode.className == 'jsonv-object';
       },
       parent: function() {
-        var parent = data;
+        var parent = self.data;
         self.path.slice(0, -1).forEach(function(key) { parent = parent[key]; });
         return parent;
       },
@@ -223,6 +224,12 @@ var jsonv = function() {
     elem.classList.add('jsonv');
     elem.addEventListener('click', listener || click);
     jsml(json(data), elem, true);
+    return {
+      update: function(data) {
+        if (listener) listener.data = data;
+        jsml(json(data), elem, true);
+      }
+    };
   };
   Array.prototype.forEach.call(document.getElementsByClassName('jsonv'), function(elem) {
     try { jsonv(elem); } catch (e) {}
