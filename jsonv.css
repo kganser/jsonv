@@ -14,13 +14,13 @@
 }
 .jsonv .jsonv-delete {
   display: none;
+  vertical-align: middle;
   width: .95em;
   height: .85em;
   margin: 0 .25em 0 -1.2em;
   text-align: center;
-  line-height: .8em;
   color: #808080;
-  font-weight: bold;
+  font: 1em/.9em sans-serif;
   cursor: pointer;
 }
 .jsonv-editable .jsonv-delete:hover {
