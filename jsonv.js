@@ -44,6 +44,8 @@ var jsonv = function() {
       var data_ = {};
       Object.keys(data).sort().forEach(function(key) { data_[key] = data[key]; });
       data = data_;
+    } else if (type == 'array') {
+      data = data.slice();
     }
     return {span: {className: 'jsonv-'+type, children: type == 'array'
       ? {ol: data.map(function(e) { return {li: [{span: {className: 'jsonv-delete', children: '×'}}, json(e)]}; })}
@@ -90,15 +92,18 @@ var jsonv = function() {
           var method = 'insert',
               object = self.object(elem),
               value = elem.textContent,
-              parent = self.parent();
+              parent = self.parent(),
+              key = self.path.pop();
           try { value = JSON.parse(value); } catch (e) {}
           if (self.origType || object) {
             method = 'put';
             if (!self.origType)
-              self.path.splice(-1, 1, elem.parentNode.children[1].textContent);
+              key = elem.parentNode.children[1].textContent;
+            parent[key] = value;
+          } else {
+            parent.splice(key, 0, value);
           }
-          listener(method, self.path.map(encodeURIComponent).join('/'), value);
-          parent[self.path.pop()] = value;
+          listener(method, self.path.concat([key]).map(encodeURIComponent).join('/'), value);
           // reset must be done before DOM changes (?) to prevent double-submit on keydown and blur
           self.path = self.origType = self.origValue = null;
           elem.parentNode.children[1].contentEditable = false;
@@ -156,7 +161,10 @@ var jsonv = function() {
               }
               if (c == 'jsonv-delete') {
                 listener('delete', self.path.map(encodeURIComponent).join('/'));
-                delete self.parent()[self.path.pop()];
+                var parent = self.parent(),
+                    key = self.path.pop();
+                if (typeof key == 'number') parent.splice(key, 1);
+                else delete parent[key];
                 self.path = self.origType = self.origValue = null;
                 t.parentNode.parentNode.removeChild(t.parentNode);
               }
