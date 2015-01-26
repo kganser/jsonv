@@ -44,8 +44,6 @@ var jsonv = function() {
       var data_ = {};
       Object.keys(data).sort().forEach(function(key) { data_[key] = data[key]; });
       data = data_;
-    } else if (type == 'array') {
-      data = data.slice();
     }
     return {span: {className: 'jsonv-'+type, children: type == 'array'
       ? {ol: data.map(function(e) { return {li: [{span: {className: 'jsonv-delete', children: '×'}}, json(e)]}; })}
@@ -223,7 +221,7 @@ var jsonv = function() {
   var jsonv = function(elem, data, listener) {
     if (data === undefined) data = JSON.parse(elem.textContent);
     if (listener) {
-      listener = handler(typeof listener == 'function' ? listener : function() {}, data);
+      listener = handler(typeof listener == 'function' ? listener : function() {}, JSON.parse(JSON.stringify(data)));
       elem.classList.add('jsonv-editable');
       elem.addEventListener('keydown', listener);
       elem.addEventListener('blur', listener, true);
@@ -234,7 +232,7 @@ var jsonv = function() {
     jsml(json(data), elem, true);
     return {
       update: function(data) {
-        if (listener) listener.data = data;
+        if (listener) listener.data = JSON.parse(JSON.stringify(data));
         jsml(json(data), elem, true);
       }
     };
