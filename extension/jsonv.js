@@ -20,7 +20,7 @@ if (location.protocol == 'chrome-extension:') {
   });
 } else {
   var background = chrome.runtime.connect(),
-      json = document.body.textContent;
+      json = document.body ? document.body.textContent : '';
   //var start = Date.now();
   background.onMessage.addListener(function(html) {
     document.body.innerHTML = '<link rel="stylesheet" href="'+chrome.runtime.getURL('jsonv.css')+'"><div class="jsonv">'+html+'</div>';
