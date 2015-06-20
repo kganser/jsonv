@@ -68,16 +68,14 @@ var jsonv = function() {
         return parent;
       },
       cancel: function(elem) {
-        if (!self.path) return;
-        self.path = null;
-        if (self.origType) { // revert if editing
+        if (self.path && self.origType) { // revert if editing
           elem.contentEditable = false;
           elem.className = self.origType;
           elem.textContent = self.origValue;
-          self.path = self.origType = self.origValue = null;
         } else { // remove if adding
           elem.parentNode.parentNode.removeChild(elem.parentNode);
         }
+        self.path = self.origType = self.origValue = null;
       },
       submit: function(elem) {
         if (!self.path) return;
