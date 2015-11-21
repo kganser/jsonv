@@ -20,20 +20,23 @@ if (location.protocol == 'chrome-extension:') {
   });
 } else {
   var background = chrome.runtime.connect(),
-      json = document.body ? document.body.textContent : '';
-  //var start = Date.now();
-  background.onMessage.addListener(function(html) {
-    document.body.innerHTML = '<link rel="stylesheet" href="'+chrome.runtime.getURL('jsonv.css')+'"><div class="jsonv">'+html+'</div>';
-    //console.log('time', Date.now()-start);
-    document.body.appendChild(document.createElement('script')).textContent = 'json = '+json+';';
-    document.onclick = function(e) {
-      var t = e.target, c = t.className;
-      if (c == 'jsonv-object' || c == 'jsonv-array')
-        t.className += ' closed';
-      else if (c == 'jsonv-object closed' || c == 'jsonv-array closed')
-        t.className = c.split(' ')[0];
-    };
-    json = null;
-  });
-  background.postMessage(json);
+      json = document.body;
+  json = json && json.children.length == 1 && json.firstChild;
+  if (json = json.tagName == 'PRE' && json.textContent) {
+    //var start = Date.now();
+    background.onMessage.addListener(function(html) {
+      document.body.innerHTML = '<link rel="stylesheet" href="'+chrome.runtime.getURL('jsonv.css')+'"><div class="jsonv">'+html+'</div>';
+      //console.log('time', Date.now()-start);
+      document.body.appendChild(document.createElement('script')).textContent = 'json = '+json+';';
+      document.onclick = function(e) {
+        var t = e.target, c = t.className;
+        if (c == 'jsonv-object' || c == 'jsonv-array')
+          t.className += ' closed';
+        else if (c == 'jsonv-object closed' || c == 'jsonv-array closed')
+          t.className = c.split(' ')[0];
+      };
+      json = null;
+    });
+    background.postMessage(json);
+  }
 }
