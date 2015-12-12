@@ -48,7 +48,12 @@ var jsonv = function() {
     return {span: {className: 'jsonv-'+type, children: type == 'array'
       ? {ol: data.map(function(e) { return {li: [{span: {className: 'jsonv-delete', children: '×'}}, json(e)]}; })}
       : type == 'object'
-        ? {ul: Object.keys(data).map(function(key) { return {li: [{span: {className: 'jsonv-delete', children: '×'}}, {span: {className: 'jsonv-key', children: key}}, ': ', json(data[key])]}; })}
+        ? {ul: Object.keys(data).map(function(key) {
+            return {li: [
+              {span: {className: 'jsonv-delete', children: '×'}},
+              {span: {className: 'jsonv-key', children: key}}, ': ', json(data[key])
+            ]};
+          })}
         : String(data)}};
   };
   var scalars = {'jsonv-string': 1, 'jsonv-number': 1, 'jsonv-boolean': 1, 'jsonv-null': 1},
@@ -88,13 +93,16 @@ var jsonv = function() {
           var method = 'insert',
               object = self.object(elem),
               value = elem.textContent,
+              item = elem.parentNode,
               parent = self.parent(),
               key = self.path.pop();
           try { value = JSON.parse(value); } catch (e) {}
           if (self.origType || object) {
+            if (!self.origType) {
+              key = item.children[1].textContent;
+              var swap = key in parent;
+            }
             method = 'put';
-            if (!self.origType)
-              key = elem.parentNode.children[1].textContent;
             parent[key] = value;
           } else {
             parent.splice(key, 0, value);
@@ -102,10 +110,16 @@ var jsonv = function() {
           listener(method, self.path.concat([key]).map(encodeURIComponent).join('/'), value);
           // reset must be done before DOM changes (?) to prevent double-submit on keydown and blur
           self.path = self.origType = self.origValue = null;
-          elem.parentNode.children[1].contentEditable = false;
-          if (object) { // replace full parent object
-            elem = elem.parentNode.parentNode.parentNode;
-            value = parent;
+          item.children[1].contentEditable = false;
+          if (object) { // move into position alphabetically
+            var list = item.parentNode,
+                i = Object.keys(parent).sort().indexOf(key);
+            if (swap) {
+              list.removeChild(item);
+              elem = list.children[i].children[2];
+            } else if (item != list.children[i]) {
+              list.insertBefore(list.removeChild(item), list.children[i]);
+            }
           }
           elem.parentNode.replaceChild(jsml(json(value)), elem);
         }
