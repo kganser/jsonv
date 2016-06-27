@@ -92,7 +92,7 @@ var jsonv = function() {
         } else {
           var method = 'insert',
               object = self.object(elem),
-              value = elem.textContent,
+              value = elem.innerHTML.replace(/<br\s*\/?>/ig, '\n').replace(/<[^>]>/g, '').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'),
               item = elem.parentNode,
               parent = self.parent(),
               key = self.path.pop();

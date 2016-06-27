@@ -97,6 +97,7 @@
   display: inline-block;
   vertical-align: top;
   white-space: pre-wrap;
+  min-height: 1.3em;
 }
 .jsonv-string[contenteditable=true]:before, .jsonv-string[contenteditable=true]:after, .jsonv-key[contenteditable=true]:after {
   content: none;
