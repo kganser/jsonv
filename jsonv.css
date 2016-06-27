@@ -8,6 +8,7 @@
 }
 .jsonv li {
   padding-left: 1.2em;
+  white-space: nowrap;
 }
 .jsonv li:after {
   content: ",";
@@ -93,6 +94,9 @@
   padding: 0 2px;
   box-shadow: 3px 3px 3px #999;
   outline: none;
+  display: inline-block;
+  vertical-align: top;
+  white-space: pre-wrap;
 }
 .jsonv-string[contenteditable=true]:before, .jsonv-string[contenteditable=true]:after, .jsonv-key[contenteditable=true]:after {
   content: none;
