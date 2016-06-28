@@ -40,21 +40,18 @@ var jsonv = function() {
   }();
   var json = function(data) {
     var type = Array.isArray(data) ? 'array' : typeof data == 'object' ? data ? 'object' : 'null' : typeof data;
-    if (type == 'object') {
-      var data_ = {};
-      Object.keys(data).sort().forEach(function(key) { data_[key] = data[key]; });
-      data = data_;
-    }
-    return {span: {className: 'jsonv-'+type, children: type == 'array'
-      ? {ol: data.map(function(e) { return {li: [{span: {className: 'jsonv-delete', children: '×'}}, json(e)]}; })}
-      : type == 'object'
-        ? {ul: Object.keys(data).map(function(key) {
-            return {li: [
-              {span: {className: 'jsonv-delete', children: '×'}},
-              {span: {className: 'jsonv-key', children: key}}, ': ', json(data[key])
-            ]};
-          })}
-        : String(data)}};
+    return {span: {className: 'jsonv-'+type, children:
+      type == 'array' ? {ol: data.map(function(e) {
+        return {li: [{span: {className: 'jsonv-delete', children: '×'}}, json(e)]};
+      })} :
+      type == 'object' ? {ul: Object.keys(data).sort().map(function(key) {
+        return {li: [
+          {span: {className: 'jsonv-delete', children: '×'}},
+          {span: {className: 'jsonv-key', children: key}}, ': ', json(data[key])
+        ]};
+      })} :
+      String(data)
+    }};
   };
   var scalars = {'jsonv-string': 1, 'jsonv-number': 1, 'jsonv-boolean': 1, 'jsonv-null': 1},
       compounds = {LI: 1, OL: 1, UL: 1};
@@ -157,11 +154,6 @@ var jsonv = function() {
                 self.origValue = t.textContent;
                 if (c == 'jsonv-string') t.textContent = JSON.stringify(t.textContent);
               }
-              if (c != 'jsonv-delete') {
-                t.contentEditable = true;
-                t.focus();
-                document.execCommand('selectAll', false, null);
-              }
               self.path = [];
               while (item != e.currentTarget) {
                 self.path.unshift(item.children[1].className == 'jsonv-key'
@@ -177,6 +169,10 @@ var jsonv = function() {
                 else delete parent[key];
                 self.path = self.origType = self.origValue = null;
                 t.parentNode.parentNode.removeChild(t.parentNode);
+              } else {
+                t.contentEditable = true;
+                t.focus();
+                document.execCommand('selectAll', false, null);
               }
             }
             break;
@@ -188,7 +184,8 @@ var jsonv = function() {
                 key = c == 'jsonv-key';
             if (esc || !t.textContent && (tab || enter || key && colon)) { // cancel
               e.preventDefault();
-              self.cancel(t);
+              t.textContent = '';
+              t.blur();
             } else if (!key && (tab || enter) && !e.shiftKey) { // submit
               e.preventDefault();
               self.submit(t);
