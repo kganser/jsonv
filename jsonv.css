@@ -1,75 +1,106 @@
 .jsonv {
   font: 13px Consolas, monospace;
 }
+.jsonv-object, .jsonv-array {
+  margin-left: 1.2em;
+}
 .jsonv-object ul, .jsonv-array ol {
-  display: inline;
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 .jsonv li {
-  padding-left: 1.2em;
   white-space: nowrap;
+  padding-left: 1.2em;
 }
 .jsonv li:after {
   content: ",";
 }
 .jsonv li:last-child:after {
-  display: none;
+  content: none;
 }
-.jsonv .jsonv-delete {
-  display: none;
-  width: .95em;
-  height: .85em;
-  margin: 0 .25em 0 -1.2em;
-  text-align: center;
+.jsonv button {
+  border: solid .1em #ddd;
+  border-radius: 3px;
+  background: white;
   color: #808080;
-  font: 1em/.9 sans-serif;
   cursor: pointer;
+  outline: none;
 }
-.jsonv-editable .jsonv-delete:hover {
+.jsonv button:hover {
   color: white;
+  border-color: transparent;
+}
+.jsonv-delete, .jsonv-add {
+  display: none;
+  vertical-align: top;
+  width: 1em;
+  padding: 0;
+  margin: .2em 0 0 .1em;
+  font: 1em/.8em sans-serif;
+}
+.jsonv-delete {
+  margin: .2em .2em 0 -1.2em;
+}
+.jsonv-delete:hover {
   background: #c5201c;
 }
+.jsonv-add:hover {
+  background: #0c0;
+}
+li > .jsonv-add {
+  margin: .2em -1.7em 0 .7em;
+}
+.jsonv-editable:hover > .jsonv-object > .jsonv-add,
+.jsonv-editable:hover > .jsonv-array > .jsonv-add,
+.jsonv-editable li:hover > .jsonv-object > .jsonv-add,
+.jsonv-editable li:hover > .jsonv-array > .jsonv-add,
+.jsonv-editable li:hover > .jsonv-add,
 .jsonv-editable li:hover > .jsonv-delete {
   display: inline-block;
 }
-.jsonv-object:before, .jsonv-array:before {
+.jsonv-toggle {
+  margin: 0 .65em 0 -1.8em;
+  cursor: pointer;
+}
+.jsonv-toggle:before {
   content: "";
   display: inline-block;
-  vertical-align: middle;
+  vertical-align: bottom;
   height: 0;
   border-style: solid;
   border-width: .6em .35em 0 .35em;
-  border-color: #5a5a5a transparent transparent transparent;
-  margin-right: .5em;
-  cursor: pointer;
-  cursor: hand;
+  border-color: #5a5a5a transparent transparent;
+  margin: .3em .25em;
 }
-.jsonv-object.closed:before, .jsonv-array.closed:before {
+.jsonv-object.closed .jsonv-toggle:before, .jsonv-array.closed .jsonv-toggle:before {
   border-width: .35em 0 .35em .6em;
   border-color: transparent transparent transparent #5a5a5a;
-  margin: 0 .4em 0 .2em;
+  margin: .25em .3em;
 }
-.jsonv-object.closed li, .jsonv-array.closed li {
+.jsonv.jsonv-editable .jsonv-object.closed .jsonv-add, /* specificity hack */
+.jsonv-object.closed ul, .jsonv-object.closed .jsonv-next,
+.jsonv.jsonv-editable .jsonv-array.closed .jsonv-add, /* specificity hack */
+.jsonv-array.closed ol, .jsonv-array.closed .jsonv-next  {
   display: none;
 }
-.jsonv-object ul:before {
+.jsonv-object:before {
   content: "{";
 }
-.jsonv-object ul:after {
+.jsonv-object:after {
   content: "}";
 }
-.jsonv-object.closed ul:before {
-  content: "{…";
+.jsonv-object.closed:after {
+  content: "…}";
 }
-.jsonv-array ol:before {
+.jsonv-array:before {
   content: "[";
 }
-.jsonv-array ol:after {
+.jsonv-array:after {
   content: "]";
 }
-.jsonv-array.closed ol:before {
-  content: "[…";
+.jsonv-array.closed:after {
+  content: "…]";
 }
 .jsonv-string:before, .jsonv-string:after {
   content: "\"";
@@ -88,17 +119,45 @@
 .jsonv-null {
   color: #808080;
 }
-.jsonv span[contenteditable=true] {
-  color: black;
-  border: solid 1px #999;
-  padding: 0 2px;
-  box-shadow: 3px 3px 3px #999;
-  outline: none;
+.jsonv-next {
+  padding-left: 1.2em;
+}
+.jsonv-next button {
+  padding: 0 5px;
+  font-size: 11px;
+}
+.jsonv-next button:hover {
+  background: #8097bd;
+}
+.jsonv-input {
+  position: relative;
   display: inline-block;
   vertical-align: top;
-  white-space: pre-wrap;
-  min-height: 1.3em;
+  padding: 1px;
+  margin: -2px;
+  border: solid 1px #999;
 }
-.jsonv-string[contenteditable=true]:before, .jsonv-string[contenteditable=true]:after, .jsonv-key[contenteditable=true]:after {
-  content: none;
+.jsonv-input pre, .jsonv-input textarea {
+  margin: 0;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  font: 13px Consolas, monospace;
+}
+.jsonv-input pre {
+  padding: 0;
+  visibility: hidden;
+  min-width: 3px;
+}
+.jsonv-input textarea {
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  padding: 1px;
+  box-sizing: border-box;
+  border: none;
+  outline: none;
+  resize: none;
 }
