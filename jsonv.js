@@ -117,7 +117,7 @@
             if (focus == parent) return;
             var k = key == null ? parent.children[1].lastChild.value : key,
                 v = parent.children[typeof key == 'number' ? 1 : 2].lastChild.value || value;
-            if (!value) parent.parentNode.removeChild(parent);
+            if (value === undefined) parent.parentNode.removeChild(parent);
             if (k != null && v) {
               var data = v;
               try { data = JSON.parse(data); } catch (e) {}
@@ -127,7 +127,7 @@
                   : Object.keys(v).reduce(function(a, b) { a[b] = inflate(v[b]); return a; }, {})};
               }(data) : data);
             }
-          }, 0);
+          });
         }
       }}]}};
     };
