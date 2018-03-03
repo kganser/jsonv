@@ -1,0 +1,175 @@
+<!doctype html>
+<html>
+  <head>
+    <title>jsonv</title>
+    <meta charset="utf-8">
+    <meta name="description" content="A library and Chrome extension for visualizing JSON data.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <link rel="canonical" href="http://jsonv.kganser.com">
+    <link rel="stylesheet" href="http://kganser.com/css/common.css">
+    <link rel="stylesheet" href="http://kganser.com/css/prettify.css">
+    <link rel="stylesheet" href="jsonv.css">
+    <link rel="chrome-webstore-item" href="https://chrome.google.com/webstore/detail/cgffjielkgfdhoiloknkfcimejepaodg">
+    <style>
+      #editor, #log {
+        display: inline-block;
+        vertical-align: top;
+        box-sizing: border-box;
+        width: 49%;
+        min-height: 200px;
+        margin-top: 0;
+      }
+      #editor {
+        margin-right: 2%;
+      }
+      #log span {
+        color: #666;
+      }
+      #gui {
+        min-height: 202px;
+      }
+      #gui img {
+        display: inline-block;
+        vertical-align: middle;
+        border: solid 1px #ddd;
+        width: 400px;
+        height: 200px;
+      }
+      #gui ul {
+        list-style: none;
+        display: inline-block;
+        vertical-align: middle;
+        margin: 0;
+        padding: 0;
+      }
+      #gui li {
+        color: #888;
+        padding: .4em 15px .6em 15px;
+        position: relative;
+        cursor: pointer;
+      }
+      #gui .selected, #gui li:hover {
+        color: black;
+      }
+      #gui .selected:before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        height: 0;
+        width: 0;
+        border-style: solid;
+        border-width: 1em 10px;
+        border-color: transparent transparent transparent #ddd;
+      }
+      .jsonv-input pre {
+        border: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <a href="http://kganser.com">kganser.com</a>
+    <h1>jsonv</h1>
+    <p>Jsonv is a viewer &amp; editor interface for JSON data. It supports toggling, pagination, and basic operations on JSON data both graphically and programmatically. It is available as a browser extension from the <a href="https://chrome.google.com/webstore/detail/cgffjielkgfdhoiloknkfcimejepaodg" target="_blank">Chrome Web Store</a>.</p>
+    <div id="gui">
+      <img src="//:0"><ul>
+        <li>Set simple values</li>
+        <li>Set JSON values</li>
+        <li>Edit values</li>
+        <li>Delete values</li>
+        <li>Insert into an array</li>
+      </ul>
+    </div>
+    <h2>Installation</h2>
+    <p>To install jsonv, include the stylesheet and script in your page and call <code>jsonv</code> with the container element and json data.</p>
+    <pre class="prettyprint">
+&lt;!-- in head tag -->
+&lt;link rel="stylesheet" href="http://jsonv.kganser.com/jsonv.css">
+
+&lt;pre id="json">&lt;/pre>
+
+&lt;!-- before closing body tag -->
+&lt;script src="http://jsonv.kganser.com/jsonv.js">&lt;/script>
+&lt;script>
+  jsonv(document.getElementById('json'), {
+    movies: {
+      'batman': {title: 'Batman', rating: 7.6, year: 1989},
+      'batman-returns': {title: 'Batman Returns', rating: 7, year: 1992}
+    },
+    series: ['batman', 'batman-returns', 'batman-forever']
+  });
+&lt;/script></pre>
+    <h2>Configuration</h2>
+    <p>Jsonv accepts an optional configuration object as its third argument:</p>
+    <pre class="prettyprint">{
+  listener:  // function
+  editor:    // boolean, defaults to false
+  collapsed: // boolean, defaults to false
+  metadata:  // boolean, defaults to false
+}</pre>
+    <p>If <code>metadata</code> is true, objects and arrays within the json data should be wrapped in a metadata object as follows. Metadata allows for pagination and fine-grained collapsed states.</p>
+    <pre class="prettyprint">{
+  data:      // original object or array
+  remaining: // optional boolean or integer count of remaining elements in a paginated object or array
+  collapsed: // boolean; object is collapsed if this or the global collapsed setting is true
+}</pre>
+    <p>A <code>listener</code> function receives events from actions taken on the jsonv UI in the following format:</p>
+    <pre class="prettyprint">function(type, path, value, callback)</pre>
+    <p>Values for <code>type</code> can be <code>get</code>, <code>put</code>, <code>insert</code>, <code>delete</code>, or <code>toggle</code>. The event's <code>path</code> is an array of strings and numeric indices. For <code>put</code> and <code>insert</code> events, <code>value</code> is the input json data; for <code>get</code> events (used for pagination), <code>value</code> is the last currently displayed key or element in the object or array; for <code>toggle</code> events, <code>value</code> is <code>true</code> if expanded and <code>false</code> if collapsed.</p>
+    <p>A <code>callback</code> of the form <code>function(error:boolean, value:json)</code> is available to <code>listener</code> for <code>get</code>, <code>put</code>, <code>insert</code>, and <code>delete</code> events to return relevant data. If the operation is performed asynchronously, <code>listener</code> should return <code>true</code> to indicate that <code>callback</code> will be issued at a later time.</p>
+    <h2>API</h2>
+    <p>Calling <code>jsonv</code> returns an object that gives programmatic access to the jsonv UI.  Below, <code>path</code> is an array of keys and numeric indices, and objects and arrays in <code>value</code> must be wrapped in metadata objects if metadata is enabled on the jsonv instance.</p>
+    <pre class="prettyprint">{
+  get:    function(path:array),
+  delete: function(path:array),
+  put:    function(path:array, value:json),
+  insert: function(path:array, value:json),
+  toggle: function(path:array, expanded:boolean|undefined)
+}</pre>
+    <h2>Demo</h2>
+    <p>Below is a jsonv editor demo with pagination. UI events are logged to the right.</p>
+    <pre id="editor"></pre><pre id="log"><span>[command] [path] [value]</span></pre>
+    <a class="git-banner" href="http://github.com/kganser/jsonv"></a>
+    <script src="http://kganser.com/js/common.js"></script>
+    <script src="http://kganser.com/js/prettify.js"></script>
+    <script src="jsonv.js"></script>
+    <script>
+      (function() {
+        var gui = document.getElementById('gui'),
+            log = document.getElementById('log'),
+            img = gui.children[0],
+            list = gui.children[1],
+            current;
+        var toggle = function(item) {
+          if (current) current.className = '';
+          (current = item).className = 'selected';
+          img.setAttribute('src', 'img/'+['put-scalar', 'put-json', 'edit', 'delete', 'insert'][[].indexOf.call(list.children, item)]+'.gif?'+Date.now());
+        };
+        list.onclick = function(e) {
+          if (e.target.tagName == 'LI') toggle(e.target);
+        };
+        toggle(list.children[0]);
+        jsonv(document.getElementById('editor'), {
+          movies: {
+            data: {batman: {data: {title: 'Batman', year: 1989}}},
+            remaining: 1
+          },
+          series: {
+            data: ['batman'],
+            remaining: 2
+          }
+        }, {
+          editor: true,
+          metadata: true,
+          listener: function(event, path, value, callback) {
+            log.appendChild(document.createTextNode('\n'+event+' '+path.join('.')+(value === undefined ? '' : ' '+JSON.stringify(value))));
+            if (event == 'get') callback(false, path[0] == 'movies'
+              ? {data: {'batman-returns': {data: {title: 'Batman Returns', year: 1992}}}}
+              : {data: ['batman-returns', 'batman-forever']});
+          }
+        });
+      }());
+    </script>
+  </body>
+</html>

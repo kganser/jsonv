@@ -63,7 +63,7 @@
       displayed in the parent object/array at `path`, or null if empty. For `toggle`, `value` is true if expanded and
       false if collapsed. The event listener for all events except `toggle` can operate asynchronously by returning true
       and issuing `callback` later. As a special case, returning true on `toggle` expand events where the expanded
-      object has no entries currently loaded  */
+      object has no entries currently loaded. */
 
   /** Editor: {
         get: function(path),

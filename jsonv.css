@@ -1,5 +1,7 @@
-.jsonv {
-  font: 13px Consolas, monospace;
+.jsonv, .jsonv-input pre, .jsonv-input textarea {
+  font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  font-size: 12px;
+  line-height: 16px;
 }
 .jsonv-object, .jsonv-array {
   margin-left: 1.2em;
@@ -66,7 +68,7 @@ li > .jsonv-add {
 .jsonv-toggle:before {
   content: "";
   display: inline-block;
-  vertical-align: bottom;
+  vertical-align: middle;
   height: 0;
   border-style: solid;
   border-width: .6em .35em 0 .35em;
@@ -133,15 +135,14 @@ li > .jsonv-add {
   position: relative;
   display: inline-block;
   vertical-align: top;
-  padding: 1px;
-  margin: -2px;
+  padding: 0 1px;
+  margin: -1px -2px;
   border: solid 1px #999;
 }
 .jsonv-input pre, .jsonv-input textarea {
   margin: 0;
   white-space: pre-wrap;
   word-wrap: break-word;
-  font: 13px Consolas, monospace;
 }
 .jsonv-input pre {
   padding: 0;
@@ -155,7 +156,7 @@ li > .jsonv-add {
   left: 0;
   height: 100%;
   width: 100%;
-  padding: 1px;
+  padding: 0 1px;
   box-sizing: border-box;
   border: none;
   outline: none;
