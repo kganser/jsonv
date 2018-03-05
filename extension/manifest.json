@@ -8,7 +8,7 @@
     "48": "jsonv48.png",
     "16": "jsonv16.png"
   },
-  "version": "0.11",
+  "version": "0.12",
   "permissions": ["http://*/", "https://*/", "ftp://*/"],
   "web_accessible_resources": ["jsonv.css"],
   "background": {
