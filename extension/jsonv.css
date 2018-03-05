@@ -1,5 +1,5 @@
 .jsonv {
-  font-family: monospace;
+  font: 12px/16px SFMono-Regular, Consolas, "Liberation Mono", Menlo, Courier, monospace;
 }
 .jsonv ul, .jsonv ol {
   display: inline;
