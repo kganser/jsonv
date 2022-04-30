@@ -1,0 +1,2 @@
+The JSONV Chrome browser extension does not store or relay to third parties
+any browsing data from users.
